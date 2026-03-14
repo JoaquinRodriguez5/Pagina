@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <title>Profesionales Online</title>
 
 <style>
 
 body{
-font-family: Arial;
-text-align:center;
+font-family:Arial;
 background:#f4f4f4;
+text-align:center;
 }
 
 #contenedor{
@@ -35,31 +36,80 @@ border-radius:5px;
 cursor:pointer;
 }
 
+input{
+display:block;
+margin:10px auto;
+padding:8px;
+width:200px;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h1>Consultá con profesionales</h1>
+<h1>Profesionales disponibles</h1>
 
 <div id="contenedor"></div>
 
-<script>
+<h2>Registrarte como profesional</h2>
 
-fetch("profesionales.json")
-.then(res => res.json())
-.then(data => {
+<input id="nombre" placeholder="Tu nombre">
+<input id="profesion" placeholder="Profesión">
+<input id="whatsapp" placeholder="WhatsApp">
 
-let contenedor = document.getElementById("contenedor");
+<button onclick="registrar()">Registrarme</button>
 
-data.forEach(pro => {
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyCSaq4d8gEOT3Wt90_QA2OL5YKgtewC-RI",
+authDomain: "pagina-web-f6732.firebaseapp.com",
+projectId: "pagina-web-f6732",
+storageBucket: "pagina-web-f6732.firebasestorage.app",
+messagingSenderId: "693547252741",
+appId: "1:693547252741:web:ceb8261ec7365aaf4df06c",
+measurementId: "G-N77EC259YS"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.registrar = async function(){
+
+let nombre = document.getElementById("nombre").value;
+let profesion = document.getElementById("profesion").value;
+let whatsapp = document.getElementById("whatsapp").value;
+
+await addDoc(collection(db,"profesionales"),{
+nombre:nombre,
+profesion:profesion,
+whatsapp:whatsapp
+});
+
+alert("Registro exitoso");
+
+}
+
+const contenedor = document.getElementById("contenedor");
+
+onSnapshot(collection(db,"profesionales"),(snapshot)=>{
+
+contenedor.innerHTML="";
+
+snapshot.forEach((doc)=>{
+
+let p = doc.data();
 
 let card = `
 <div class="card">
-<h2>${pro.nombre}</h2>
-<p>${pro.descripcion}</p>
-<a href="https://wa.me/${pro.whatsapp}" target="_blank">
+<h3>${p.nombre}</h3>
+<p>${p.profesion}</p>
+<a href="https://wa.me/${p.whatsapp}" target="_blank">
 <button>Contactar</button>
 </a>
 </div>
@@ -70,6 +120,11 @@ contenedor.innerHTML += card;
 });
 
 });
+
+</script>
+
+</body>
+</html>
 
 </script>
 

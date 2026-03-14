@@ -2,18 +2,25 @@
 <html>
 <head>
 <title>Profesionales Online</title>
+
 <style>
 
 body{
 font-family: Arial;
-text-align: center;
-background-color: #f4f4f4;
+text-align:center;
+background:#f4f4f4;
+}
+
+#contenedor{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
 }
 
 .card{
 background:white;
 width:250px;
-margin:20px auto;
+margin:15px;
 padding:20px;
 border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.2);
@@ -23,47 +30,48 @@ button{
 background:#25D366;
 color:white;
 border:none;
-padding:10px 20px;
-font-size:16px;
+padding:10px;
 border-radius:5px;
 cursor:pointer;
 }
 
-button:hover{
-background:#1ebe5d;
-}
-
 </style>
+
 </head>
 
 <body>
 
 <h1>Consultá con profesionales</h1>
-<p>Elegí el profesional y hablá directo por WhatsApp</p>
 
+<div id="contenedor"></div>
+
+<script>
+
+fetch("profesionales.json")
+.then(res => res.json())
+.then(data => {
+
+let contenedor = document.getElementById("contenedor");
+
+data.forEach(pro => {
+
+let card = `
 <div class="card">
-<h2>Docente</h2>
-<p>Clases particulares</p>
-<a href="https://wa.me/541138938719" target="_blank">
+<h2>${pro.nombre}</h2>
+<p>${pro.descripcion}</p>
+<a href="https://wa.me/${pro.whatsapp}" target="_blank">
 <button>Contactar</button>
 </a>
 </div>
+`;
 
-<div class="card">
-<h2>Doctor</h2>
-<p>Consulta médica</p>
-<a href="https://wa.me/541161917701" target="_blank">
-<button>Contactar</button>
-</a>
-</div>
+contenedor.innerHTML += card;
 
-<div class="card">
-<h2>Abogado</h2>
-<p>Asesoramiento legal</p>
-<a href="https://wa.me/541139198474" target="_blank">
-<button>Contactar</button>
-</a>
-</div>
+});
+
+});
+
+</script>
 
 </body>
 </html>
